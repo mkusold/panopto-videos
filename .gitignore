@@ -1,1 +1,5 @@
 node_modules
+input
+output
+dist
+.DS_Store
