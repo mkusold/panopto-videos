@@ -18,7 +18,7 @@ export const convertToMp4 = (inputPath: string, outputPath: string): Promise<voi
         process.stdout.write(`Processing: ${progress.percent?.toFixed(2)}% done`);
       })
       .on('end', () => {
-        console.log('Conversion completed successfully!');
+        console.log('\nConversion completed successfully!');
         resolve();
       })
       .on('error', (err) => {

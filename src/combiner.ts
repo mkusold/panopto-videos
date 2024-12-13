@@ -21,7 +21,7 @@ export const combineAudioAndVideo = (videoPath: string, audioPath: string, outpu
          process.stdout.write(`Processing: ${progress.percent?.toFixed(2)}% done`);
       })
       .on('end', () => {
-        console.log(`Audio and video combined successfully! Output saved to ${outputPath}`);
+        console.log(`\nAudio and video combined successfully! Output saved to ${outputPath}`);
         resolve();
       })
       .on('error', (err) => {
