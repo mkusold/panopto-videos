@@ -127,6 +127,7 @@ const combineVideoAndAudio = async (outputFolder: string) => {
 const main = () => {
   const inputFolder = path.resolve('./input');
   const outputFolder = path.resolve('./output');
+  
   // convert all input files to .mp4
   convertInput(inputFolder, outputFolder);
   // combine video and audio
