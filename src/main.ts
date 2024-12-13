@@ -22,20 +22,23 @@ const convertInput = async (inputDir: string, outputDir: string) => {
         // Recursively process the nested directory
         await convertInput(inputPath, outputPath);
       } else if (path.extname(item.name).toLowerCase() === '.mkv') {
-        // Ensure the output file has an .mp4 extension
         const outputFilePath = path.join(outputDir, path.basename(item.name, '.mkv') + '.mp4');
 
         try {
           // Check if the output file already exists
-          await fs.access(outputFilePath).catch(() => null); // Catching the error to check existence
-
-          // If the file doesn't exist, convert it
-          if (outputFilePath) {
-            console.log(`Converting ${inputPath} to ${outputFilePath}`);
-            await convertToMp4(inputPath, outputFilePath);
-          } else {
+          await fs.access(outputFilePath).then(() => {
+            // If the file exists, log and skip the conversion
             console.log(`${outputFilePath} already exists, skipping conversion.`);
-          }
+          }).catch(async (err) => {
+            // If the file does not exist, proceed with conversion
+            if (err.code === 'ENOENT') {
+              console.log(`Converting ${inputPath} to ${outputFilePath}`);
+              await convertToMp4(inputPath, outputFilePath);
+            } else {
+              // Any other errors (e.g., permission issues) will be logged
+              console.error(`Failed to check existence of ${outputFilePath}:`, err);
+            }
+          });
         } catch (err) {
           console.error(`Failed to check or convert ${inputPath}:`, err);
         }
@@ -85,11 +88,28 @@ const combineVideoAndAudio = async (outputFolder: string) => {
           }
         }
 
+        if(!mp4WithAudio || !mp4WithoutAudio){
+          console.error(`===== ERROR: Can't find items to make the final for ${ item.name } ===`)
+          return;
+        }
         // If we have at least one file with audio and one without, combine them
-        if (mp4WithAudio && mp4WithoutAudio) {
           const audioFile = mp4WithAudio; // First file with audio
           const videoFile = mp4WithoutAudio; // First file without audio
           const outputFilePath = path.join(folderPath, `${item.name}.mp4`);
+
+          try {
+            // Check if the output file exists
+            await fs.access(outputFilePath).catch(() => null); // Check file existence, if it exists it will proceed
+        
+            // If the file exists, delete it
+            await fs.unlink(outputFilePath);
+            console.log(`${outputFilePath} already exists, deleting it before creating the new file.`);
+          } catch (err: any) {
+            // If the file doesn't exist, no need to delete
+            if (err.code !== 'ENOENT') {
+              console.error(`Failed to check or delete existing file ${outputFilePath}:`, err);
+            }
+          }
 
           console.log(`Combining audio from ${audioFile} and video from ${videoFile} into ${outputFilePath}`);
           try {
@@ -97,8 +117,6 @@ const combineVideoAndAudio = async (outputFolder: string) => {
           } catch (err) {
             console.error('Failed to combine audio and video:', err);
           }
-        }
-        console.error("Can't find items to make the final ", item.name )
       }
     }
   } catch (err) {

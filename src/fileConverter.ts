@@ -15,7 +15,7 @@ export const convertToMp4 = (inputPath: string, outputPath: string): Promise<voi
         console.log('FFmpeg process started:', commandLine);
       })
       .on('progress', (progress) => {
-        console.log(`Processing: ${progress.percent?.toFixed(2)}% done`);
+        // console.log(`Processing: ${progress.percent?.toFixed(2)}% done`);
       })
       .on('end', () => {
         console.log('Conversion completed successfully!');

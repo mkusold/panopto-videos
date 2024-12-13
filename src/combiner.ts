@@ -18,7 +18,7 @@ export const combineAudioAndVideo = (videoPath: string, audioPath: string, outpu
         console.log('FFmpeg command:', commandLine);
       })
       .on('progress', (progress) => {
-        console.log(`Processing: ${progress.percent?.toFixed(2)}% done`);
+        // console.log(`Processing: ${progress.percent?.toFixed(2)}% done`);
       })
       .on('end', () => {
         console.log(`Audio and video combined successfully! Output saved to ${outputPath}`);
