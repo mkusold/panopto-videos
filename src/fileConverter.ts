@@ -11,9 +11,6 @@ export const convertToMp4 = (inputPath: string, outputPath: string): Promise<voi
   return new Promise((resolve, reject) => {
     ffmpeg(inputPath)
       .toFormat('mp4') // Convert to MP4 format
-      .on('start', (commandLine) => {
-        console.log('FFmpeg process started:', commandLine);
-      })
       .on('progress', (progress) => {
         // Clear the current line and print the updated progress
         process.stdout.clearLine(0); 

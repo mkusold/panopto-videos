@@ -14,9 +14,6 @@ export const combineAudioAndVideo = (videoPath: string, audioPath: string, outpu
       .input(videoPath)
       .input(audioPath)
       .outputOptions(['-c:v copy', '-c:a aac', '-strict experimental'])
-      .on('start', (commandLine) => {
-        console.log('FFmpeg command:', commandLine);
-      })
       .on('progress', (progress) => {
          // Clear the current line and print the updated progress
          process.stdout.clearLine(0); 
